@@ -20,7 +20,8 @@ const userInfo = {
     name: "",
     user_name: "",
     hear_about_us: "",
-    user_experience: ""
+    user_experience: "",
+    friend_invitation: null
 }
 
 
@@ -46,14 +47,21 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err))
 
-bot.onText(/\/start/, async (msg) => {
+bot.onText(/\/start(?: (.+))?/, async (msg, match) => {
+    const param = match[1];
     userState = {}
     userInfo.name = ""
     userInfo.user_experience = ""
     userInfo.user_name = ""
     userInfo.hear_about_us = ""
     userInfo.id_user = ""
+    userInfo.friend_invitation = ""
+
     const chatId = msg.chat.id;
+
+    if (param) {
+        userInfo.friend_invitation = param
+    }
 
     const user = await UserSchema.findOne({id_user: msg.from.id})
 
@@ -91,6 +99,8 @@ bot.onText(/\/start/, async (msg) => {
     }
 
 });
+
+
 
 
 
@@ -244,8 +254,22 @@ bot.on('message',  (msg) => {
         bot.getChatMember(group_chat_id, userInfo.id_user).then((chatMember) => {
             if (chatMember.status === 'member' || chatMember.status === 'administrator' || chatMember.status === 'creator') {
                 console.log(userInfo)
-                const user = new UserSchema(userInfo)
-                user.save()
+                if (userInfo.friend_invitation) {
+                    const user = new UserSchema(userInfo)
+                    user.save()
+                }
+                if (!userInfo.friend_invitation) {
+                    let { id_user, name, user_name, user_experience, hear_about_us} = userInfo
+                    const user = new UserSchema({
+                        id_user,
+                        name,
+                        user_name,
+                        hear_about_us,
+                        user_experience,
+
+                    })
+                    user.save()
+                }
                 bot.sendMessage(userState.chat, "<b>Ваша заявка принята!</b>", {parse_mode: "HTML"}).then(()=> {
                     let main_text = "<b>🌐 Информация INFINITY TEAM</b>\n\n" +
                         "<b>👤 Проценты воркера</b>\n" +

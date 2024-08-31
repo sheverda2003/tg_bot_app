@@ -41,6 +41,11 @@ const infinity_bot_users = new Schema({
         type: Number,
         required: true,
         default: 0
+    },
+    friend_invitation: {
+        type: String,
+        required: false,
+        unique: false,
     }
 
 })
