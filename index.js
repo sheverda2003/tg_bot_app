@@ -23,6 +23,9 @@ const userInfo = {
     user_experience: ""
 }
 
+
+
+
 const app = express()
 
 app.get("/", async (req, res) => {
@@ -59,13 +62,13 @@ bot.onText(/\/start/, async (msg) => {
             "<b>👤 Проценты воркера</b>\n" +
             "<b>┣ Пополнение: 80%</b>\n" +
             "<b>┣ Пополнение ТП: 65%</b>\n" +
-            "<b>┣ Обнал: 60%</b>\n\n" +
+            "<b>┖ Обнал: 60%</b>\n\n" +
             "<b>📈 Основные направления работы</b>\n" +
             "<b>┣ ESCORT</b>\n" +
             "<b>┣ TRADE (в разработке) </b>\n" +
             "<b>┣ NFT (в разработке) </b>\n" +
             "<b>┣ CASINO (в разработке) </b>\n" +
-            "<b>┣ EXCHANGER (в разработке) </b>\n"
+            "<b>┖ EXCHANGER (в разработке) </b>\n"
         await bot.sendMessage(chatId, main_text, {parse_mode: "HTML", reply_markup: JSON.stringify({
                 inline_keyboard: [
                     [{text: "💬 Общий чат", url: "https://t.me/+7lDgYSLAg3Q1ZWQ6", callback_data: "chat"}],
@@ -194,13 +197,13 @@ bot.on("callback_query", async (msg) => {
             "<b>👤 Проценты воркера</b>\n" +
             "<b>┣ Пополнение: 80%</b>\n" +
             "<b>┣ Пополнение ТП: 65%</b>\n" +
-            "<b>┣ Обнал: 60%</b>\n\n" +
+            "<b>┖ Обнал: 60%</b>\n\n" +
             "<b>📈 Основные направления работы</b>\n" +
             "<b>┣ ESCORT</b>\n" +
             "<b>┣ TRADE (в разработке) </b>\n" +
             "<b>┣ NFT (в разработке) </b>\n" +
             "<b>┣ CASINO (в разработке) </b>\n" +
-            "<b>┣ EXCHANGER (в разработке) </b>\n"
+            "<b>┖ EXCHANGER (в разработке) </b>\n"
         await bot.sendMessage(chatId, main_text, {parse_mode: "HTML", reply_markup: JSON.stringify({
                 inline_keyboard: [
                     [{text: "💬 Общий чат", url: "https://t.me/+7lDgYSLAg3Q1ZWQ6", callback_data: "chat"}],
