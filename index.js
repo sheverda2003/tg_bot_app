@@ -4,7 +4,7 @@ const UserSchema = require("./models/UserSchema");
 const express = require("express");
 
 
-const token = '7351379437:AAG3HCAVluQmy2aCXIIyc60taDkdDvhYIuU'
+const token = '6795020766:7351379437:AAG3HCAVluQmy2aCXIIyc60taDkdDvhYIuU'
 const dbURI = 'mongodb+srv://nsewerda04:soket775@cluster0.kkg0ems.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 const PORT = process.env.PORT || 3000;
 
@@ -100,6 +100,19 @@ bot.onText(/\/start(?: (.+))?/, async (msg, match) => {
 
 });
 
+// bot.onText(/\/add_user(?: (.+))?/, async (msg, match) => {
+//     const user = new UserSchema({
+//         id_user: "6345463571",
+//         name: "Ю🖤",
+//         user_name: "@x_Peach_x",
+//         hear_about_us: "От друга",
+//         user_experience: "Да",
+//     })
+//     await user.save()
+//
+// });
+
+
 
 
 
@@ -109,34 +122,78 @@ bot.on("callback_query", async (msg) => {
     userInfo.id_user = msg.from.id;
     if (msg.from.username) {
         userInfo.user_name = msg.from.username;
-    } else {
-        userInfo.user_name = "аноним"
-    }
-    userInfo.name = msg.from.first_name;
-    let message_rules_id = null;
-    if (msg.data === "apply" || msg.data === "agree_rules") {
-        let text = '<b>⛔️ Правилами команды строго запрещается:</b>\n' +
-            `<em>•  Приём на свои кошельки/реквизиты.</em>\n` +
-            `<em>•  Обман администрации проекта.</em>\n` +
-            `<em>•  Обход ограничений.</em>\n` +
-            `<em>•  Неподобающе поведение. </em>\n` +
-            `<em>•  Реклама.</em>\n` +
-            `<em>•  Попрошайничество.</em>\n` +
-            `<em>•  Отправка NSFW и NSFL контента.</em>\n` +
-            `<em>•  Организация конфликтов на фоне политики/религии.</em>\n` +
-            `<em>•  Представление кем-либо из СТАФФА.</em>\n` +
-            `<em>•  Дезинформирование кого либо о любых проектах касаемо</em>\n` +
-            `<em>INFINITY TEAM, или совершение действий, нацеленных на подрыв репутации INFINITY TEAM.</em>\n`
+        userInfo.name = msg.from.first_name;
+        let message_rules_id = null;
+        if (msg.data === "apply" || msg.data === "agree_rules") {
+            let text = '<b>⛔️ Правилами команды строго запрещается:</b>\n' +
+                `<em>•  Приём на свои кошельки/реквизиты.</em>\n` +
+                `<em>•  Обман администрации проекта.</em>\n` +
+                `<em>•  Обход ограничений.</em>\n` +
+                `<em>•  Неподобающе поведение. </em>\n` +
+                `<em>•  Реклама.</em>\n` +
+                `<em>•  Попрошайничество.</em>\n` +
+                `<em>•  Отправка NSFW и NSFL контента.</em>\n` +
+                `<em>•  Организация конфликтов на фоне политики/религии.</em>\n` +
+                `<em>•  Представление кем-либо из СТАФФА.</em>\n` +
+                `<em>•  Дезинформирование кого либо о любых проектах касаемо</em>\n` +
+                `<em>INFINITY TEAM, или совершение действий, нацеленных на подрыв репутации INFINITY TEAM.</em>\n`
 
-        await bot.deleteMessage(chatId, msg.message.message_id)
-        bot.sendMessage(chatId, text, {
-            parse_mode: "HTML", reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    [{text: "✅ Согласен", callback_data: "agree_rules"}],
-                ]
+            await bot.deleteMessage(chatId, msg.message.message_id)
+            bot.sendMessage(chatId, text, {
+                parse_mode: "HTML", reply_markup: JSON.stringify({
+                    inline_keyboard: [
+                        [{text: "✅ Согласен", callback_data: "agree_rules"}],
+                    ]
+                })
+            }).then((sentMsg) => {
+                message_rules_id = sentMsg.message_id;
+                let text_change = '<b>⛔️ Правилами команды строго запрещается:</b>\n' +
+                    `<em>•  Приём на свои кошельки/реквизиты.</em>\n` +
+                    `<em>•  Обман администрации проекта.</em>\n` +
+                    `<em>•  Обход ограничений.</em>\n` +
+                    `<em>•  Неподобающе поведение. </em>\n` +
+                    `<em>•  Реклама.</em>\n` +
+                    `<em>•  Попрошайничество.</em>\n` +
+                    `<em>•  Отправка NSFW и NSFL контента.</em>\n` +
+                    `<em>•  Организация конфликтов на фоне политики/религии.</em>\n` +
+                    `<em>•  Представление кем-либо из СТАФФА.</em>\n` +
+                    `<em>•  Дезинформирование кого либо о любых проектах касаемо</em>\n` +
+                    `<em>INFINITY TEAM, или совершение действий, нацеленных на подрыв репутации INFINITY TEAM.</em>\n\n` +
+                    `✅ Вы ознакомились с правилами проекта`
+                if (msg.data === "agree_rules") {
+                    bot.editMessageText(text_change, {
+                        chat_id: chatId,
+                        message_id: message_rules_id,
+                        parse_mode: 'HTML'
+                    });
+                    bot.sendMessage(chatId, "- Откуда Вы узнали о нас?")
+                    userState[chatId] = {step: "hear_about_us"}
+                }
             })
-        }).then((sentMsg) => {
-            message_rules_id = sentMsg.message_id;
+        } else if (msg.data === "cancel_application") {
+            await bot.deleteMessage(chatId, msg.message.message_id)
+            let text = '🔹 Добро пожаловать в <b>ONE TEAM</b>\n\n' +
+                `Жми на кнопку, чтобы подать заявку в команду`
+            await bot.sendMessage(chatId, text, {parse_mode: "HTML",  reply_markup: JSON.stringify({
+                    inline_keyboard: [
+                        [{ text: "🗳 Подать заявку", callback_data: "apply"}],
+                    ]
+                })});
+        } else if (msg.data === "send_application") {
+            await bot.deleteMessage(chatId, msg.message.message_id)
+            const text = "<b>✈️ Для подачи заявки, вам необходимо вступить в чат команды!</b>"
+            userState = {
+                step: "chat_add",
+                chat: chatId
+            }
+            await bot.sendMessage(chatId, text, {parse_mode: "HTML", reply_markup: JSON.stringify({
+                    inline_keyboard: [
+                        [{text: "💬 Вступить в чат", url: "https://t.me/+7lDgYSLAg3Q1ZWQ6", callback_data: "chat"}],
+                    ]
+                })})
+
+        } else if (msg.data === "main_menu_rules") {
+            await bot.deleteMessage(chatId, msg.message.message_id)
             let text_change = '<b>⛔️ Правилами команды строго запрещается:</b>\n' +
                 `<em>•  Приём на свои кошельки/реквизиты.</em>\n` +
                 `<em>•  Обман администрации проекта.</em>\n` +
@@ -148,80 +205,39 @@ bot.on("callback_query", async (msg) => {
                 `<em>•  Организация конфликтов на фоне политики/религии.</em>\n` +
                 `<em>•  Представление кем-либо из СТАФФА.</em>\n` +
                 `<em>•  Дезинформирование кого либо о любых проектах касаемо</em>\n` +
-                `<em>INFINITY TEAM, или совершение действий, нацеленных на подрыв репутации INFINITY TEAM.</em>\n\n` +
-                `✅ Вы ознакомились с правилами проекта`
-            if (msg.data === "agree_rules") {
-                bot.editMessageText(text_change, {
-                    chat_id: chatId,
-                    message_id: message_rules_id,
-                    parse_mode: 'HTML'
-                });
-                bot.sendMessage(chatId, "- Откуда Вы узнали о нас?")
-                userState[chatId] = {step: "hear_about_us"}
-            }
-        })
-    } else if (msg.data === "cancel_application") {
-        await bot.deleteMessage(chatId, msg.message.message_id)
-        let text = '🔹 Добро пожаловать в <b>ONE TEAM</b>\n\n' +
-            `Жми на кнопку, чтобы подать заявку в команду`
-        await bot.sendMessage(chatId, text, {parse_mode: "HTML",  reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    [{ text: "🗳 Подать заявку", callback_data: "apply"}],
-                ]
-            })});
-    } else if (msg.data === "send_application") {
-        await bot.deleteMessage(chatId, msg.message.message_id)
-        const text = "<b>✈️ Для подачи заявки, вам необходимо вступить в чат команды!</b>"
-        userState = {
-            step: "chat_add",
-            chat: chatId
+                `<em>INFINITY TEAM, или совершение действий, нацеленных на подрыв репутации INFINITY TEAM.</em>\n\n`
+            await bot.sendMessage(chatId, text_change, {parse_mode: "HTML", reply_markup: JSON.stringify({
+                    inline_keyboard: [
+                        [{text: "↩ Вернуться", callback_data: "main_menu"}],
+                    ]
+                })})
+        } else if (msg.data === "main_menu") {
+            await bot.deleteMessage(chatId, msg.message.message_id)
+            let main_text = "<b>🌐 Информация INFINITY TEAM</b>\n\n" +
+                "<b>👤 Проценты воркера</b>\n" +
+                "<b>┣ Пополнение: 80%</b>\n" +
+                "<b>┣ Пополнение ТП: 65%</b>\n" +
+                "<b>┖ Обнал: 60%</b>\n\n" +
+                "<b>📈 Основные направления работы</b>\n" +
+                "<b>┣ ESCORT</b>\n" +
+                "<b>┣ TRADE (в разработке) </b>\n" +
+                "<b>┣ NFT (в разработке) </b>\n" +
+                "<b>┣ CASINO (в разработке) </b>\n" +
+                "<b>┖ EXCHANGER (в разработке) </b>\n"
+            await bot.sendMessage(chatId, main_text, {parse_mode: "HTML", reply_markup: JSON.stringify({
+                    inline_keyboard: [
+                        [{text: "💬 Общий чат", url: "https://t.me/+7lDgYSLAg3Q1ZWQ6", callback_data: "chat"}],
+                        [{text: "Выплаты 💰", url: "https://t.me/infinityTeamProfits", callback_data: "chat"}, {text: "Панель для роботы 📘", url: "https://t.me/InfTeamBot"}],
+                        [{text: "Мануалы 📂", url: "https://t.me/infinitiManuals", callback_data: "chat"}, {text: "Правила 📄", callback_data: "main_menu_rules"}],
+                    ]
+                })})
         }
-        await bot.sendMessage(chatId, text, {parse_mode: "HTML", reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    [{text: "💬 Вступить в чат", url: "https://t.me/+7lDgYSLAg3Q1ZWQ6", callback_data: "chat"}],
-                ]
-            })})
-
-    } else if (msg.data === "main_menu_rules") {
-        await bot.deleteMessage(chatId, msg.message.message_id)
-        let text_change = '<b>⛔️ Правилами команды строго запрещается:</b>\n' +
-            `<em>•  Приём на свои кошельки/реквизиты.</em>\n` +
-            `<em>•  Обман администрации проекта.</em>\n` +
-            `<em>•  Обход ограничений.</em>\n` +
-            `<em>•  Неподобающе поведение. </em>\n` +
-            `<em>•  Реклама.</em>\n` +
-            `<em>•  Попрошайничество.</em>\n` +
-            `<em>•  Отправка NSFW и NSFL контента.</em>\n` +
-            `<em>•  Организация конфликтов на фоне политики/религии.</em>\n` +
-            `<em>•  Представление кем-либо из СТАФФА.</em>\n` +
-            `<em>•  Дезинформирование кого либо о любых проектах касаемо</em>\n` +
-            `<em>INFINITY TEAM, или совершение действий, нацеленных на подрыв репутации INFINITY TEAM.</em>\n\n`
-        await bot.sendMessage(chatId, text_change, {parse_mode: "HTML", reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    [{text: "↩ Вернуться", callback_data: "main_menu"}],
-                ]
-            })})
-    } else if (msg.data === "main_menu") {
-        await bot.deleteMessage(chatId, msg.message.message_id)
-        let main_text = "<b>🌐 Информация INFINITY TEAM</b>\n\n" +
-            "<b>👤 Проценты воркера</b>\n" +
-            "<b>┣ Пополнение: 80%</b>\n" +
-            "<b>┣ Пополнение ТП: 65%</b>\n" +
-            "<b>┖ Обнал: 60%</b>\n\n" +
-            "<b>📈 Основные направления работы</b>\n" +
-            "<b>┣ ESCORT</b>\n" +
-            "<b>┣ TRADE (в разработке) </b>\n" +
-            "<b>┣ NFT (в разработке) </b>\n" +
-            "<b>┣ CASINO (в разработке) </b>\n" +
-            "<b>┖ EXCHANGER (в разработке) </b>\n"
-        await bot.sendMessage(chatId, main_text, {parse_mode: "HTML", reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    [{text: "💬 Общий чат", url: "https://t.me/+7lDgYSLAg3Q1ZWQ6", callback_data: "chat"}],
-                    [{text: "Выплаты 💰", url: "https://t.me/infinityTeamProfits", callback_data: "chat"}, {text: "Панель для роботы 📘", url: "https://t.me/InfTeamBot"}],
-                    [{text: "Мануалы 📂", url: "https://t.me/infinitiManuals", callback_data: "chat"}, {text: "Правила 📄", callback_data: "main_menu_rules"}],
-                ]
-            })})
+    } else {
+        let errorText = "<b>У вас нет имени пользователя!</b>\n\n" +
+        "<b>Задайте имя пользователя и напишите /start</b>"
+        await bot.sendMessage(chatId, errorText, {parse_mode: "HTML"})
     }
+
 })
 
 bot.on("message", async (msg) => {
