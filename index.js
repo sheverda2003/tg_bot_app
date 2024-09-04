@@ -4,7 +4,7 @@ const UserSchema = require("./models/UserSchema");
 const express = require("express");
 
 
-const token = '6795020766:7351379437:AAG3HCAVluQmy2aCXIIyc60taDkdDvhYIuU'
+const token = '7351379437:AAG3HCAVluQmy2aCXIIyc60taDkdDvhYIuU'
 const dbURI = 'mongodb+srv://nsewerda04:soket775@cluster0.kkg0ems.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 const PORT = process.env.PORT || 3000;
 
