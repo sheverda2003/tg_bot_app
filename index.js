@@ -13,6 +13,9 @@ const PORT = process.env.PORT || 3000;
 const bot = new TelegramApi(token, {polling: true});
 
 
+
+
+
 let userState = {};
 
 const userInfo = {
