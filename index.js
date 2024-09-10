@@ -16,6 +16,8 @@ const bot = new TelegramApi(token, {polling: true});
 
 
 
+
+
 let userState = {};
 
 const userInfo = {
